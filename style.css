@@ -1,0 +1,55 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+body {
+  display: flex;
+  justify-content: center;
+}
+#input-display {
+  background-color: black;
+  color: white;
+  border-color: white;
+  text-align: end;
+  width: 493px;
+  height: 80px;
+  margin-bottom: 50px;
+  font-size: xx-large;
+}
+.inputs {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  flex-wrap: wrap;
+  width: 500px;
+}
+button {
+  background-color: black;
+  color: white;
+  border-color: white;
+  border-radius: 5px;
+  width: 110px;
+  height: 80px;
+  margin-bottom: 20px;
+  font-size: xx-large;
+}
+#equal {
+  margin-bottom: 0px;
+}
+.main {
+  background-color: black;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 735px;
+  width: 1200px;
+}
+#result {
+  background-color: black;
+  color: white;
+  border-color: white;
+  font-size: xx-large;
+  width: 500px;
+  height: 600px;
+  text-align: center;
+}
