@@ -1,5 +1,32 @@
 document.getElementById("input-display").value = 0;
 
+function dot() {
+  let l = document.getElementById("input-display").value.length;
+  if (
+    document.getElementById("input-display").value[l - 1] === "*" ||
+    document.getElementById("input-display").value[l - 1] === "-" ||
+    document.getElementById("input-display").value[l - 1] === "+" ||
+    document.getElementById("input-display").value[l - 1] === "/" ||
+    document.getElementById("input-display").value[l - 1] === "."
+  ) {
+    return false;
+  }
+
+  for (i = l - 2; i >= 0; i--) {
+    if (
+      document.getElementById("input-display").value[i] === "*" ||
+      document.getElementById("input-display").value[i] === "-" ||
+      document.getElementById("input-display").value[i] === "+" ||
+      document.getElementById("input-display").value[i] === "/"
+    ) {
+      return true;
+    } else if (document.getElementById("input-display").value[i] === ".") {
+      return false;
+    }
+  }
+  return true;
+}
+
 function insertClickedDigit(digit) {
   if (
     document.getElementById("input-display").value ===
@@ -30,11 +57,22 @@ function insertClickedOperator(symbol) {
     document.getElementById("input-display").value =
       document.getElementById("input-display").value.slice(0, l - 1) +
       document.getElementById(symbol).innerText;
+  } else if (document.getElementById("input-display").value[l - 1] === ".") {
+    document.getElementById("input-display").value =
+      document.getElementById("input-display").value.slice(0, l - 1) +
+      document.getElementById(symbol).innerText;
   } else {
     document.getElementById("input-display").value +=
       document.getElementById(symbol).innerText;
   }
 }
+
+document.getElementById("decimal").addEventListener("click", function () {
+  if (dot()) {
+    document.getElementById("input-display").value +=
+      document.getElementById("decimal").innerText;
+  }
+});
 
 document.getElementById("btn1").addEventListener("click", function () {
   insertClickedDigit("btn1");
@@ -73,7 +111,19 @@ document.getElementById("btn9").addEventListener("click", function () {
 });
 
 document.getElementById("btn0").addEventListener("click", function () {
-  insertClickedDigit("btn0");
+  let l = document.getElementById("input-display").value.length;
+  if (
+    document.getElementById("input-display").value[l - 1] === "+" ||
+    document.getElementById("input-display").value[l - 1] === "-" ||
+    document.getElementById("input-display").value[l - 1] === "-" ||
+    document.getElementById("input-display").value[l - 1] === "*"
+  ) {
+    document.getElementById("input-display").value +=
+      document.getElementById("btn0").innerText +
+      document.getElementById("decimal").innerText;
+  } else {
+    insertClickedDigit("btn0");
+  }
 });
 
 document.getElementById("plus").addEventListener("click", function () {
@@ -102,6 +152,10 @@ document.getElementById("minus").addEventListener("click", function () {
     document.getElementById("input-display").value[l - 1] === "*" ||
     document.getElementById("input-display").value[l - 1] === "/"
   ) {
+    document.getElementById("input-display").value =
+      document.getElementById("input-display").value.slice(0, l - 1) +
+      document.getElementById("minus").innerText;
+  } else if (document.getElementById("input-display").value[l - 1] === ".") {
     document.getElementById("input-display").value =
       document.getElementById("input-display").value.slice(0, l - 1) +
       document.getElementById("minus").innerText;
