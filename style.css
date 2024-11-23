@@ -13,7 +13,7 @@ body {
   text-align: end;
   width: 493px;
   height: 80px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   font-size: xx-large;
 }
 .inputs {
@@ -33,9 +33,11 @@ button {
   margin-bottom: 20px;
   font-size: xx-large;
 }
-#equal {
-  margin-bottom: 0px;
+button:hover {
+  background-color: white;
+  color: black;
 }
+
 .main {
   background-color: black;
   display: flex;
@@ -52,4 +54,13 @@ button {
   width: 500px;
   height: 600px;
   text-align: center;
+}
+#error-msg {
+  color: white;
+  width: 493px;
+  background-color: black;
+  height: 50px;
+  text-align: end;
+  margin-bottom: 20px;
+  display: none;
 }
