@@ -1,12 +1,73 @@
-let input = "2";
-let a = "";
-let b;
-let c = "";
-let d;
+let input = "1+(2*3(5*5))-2(2/3)";
+let indexValueOfOpenBracket = 0;
+let indexValueOfCloseBracket = 0;
+let tempInput;
+let result;
 
-function needed() {
-  a = "";
-  for (let i of input) {
+function inputProcessor() {
+  if (input.indexOf("(") !== -1) {
+    input = input.replace(tempInput, String(result));
+    someFunc();
+  } else {
+    console.log(result);
+  }
+}
+
+function someFunc() {
+  for (i = 1; i < input.length; i++) {
+    if (
+      input[i] === "(" &&
+      input[i - 1] !== "*" &&
+      input[i - 1] !== "/" &&
+      input[i - 1] !== "+" &&
+      input[i - 1] !== "-"
+    ) {
+      input = input.slice(0, i) + "*" + input.slice(i);
+    }
+  }
+
+  console.log(input, "test3");
+
+  for (i = 0; i < input.length; i++) {
+    if (input[i] === ")") {
+      indexValueOfCloseBracket = i;
+      break;
+    } else if (input[i] === "(") {
+      indexValueOfOpenBracket = i;
+    }
+  }
+
+  console.log(indexValueOfOpenBracket);
+  console.log(indexValueOfCloseBracket);
+
+  tempInput = input.slice(
+    indexValueOfOpenBracket,
+    indexValueOfCloseBracket + 1
+  );
+
+  console.log(tempInput, "test2");
+
+  function calculate(somepara) {
+    return (somepara = somepara.slice(1, somepara.length - 1));
+  }
+
+  let figuresOnly = calculate(tempInput);
+
+  for (let k of input) {
+    if (k !== "(") {
+      figuresOnly = input;
+    } else {
+      figuresOnly = calculate(tempInput);
+      break;
+    }
+  }
+  console.log(figuresOnly, "test");
+
+  let resultHolder = "";
+  let resultHolder2;
+  let concatVar = "";
+
+  for (let i of figuresOnly) {
     if (
       i !== "+" &&
       i !== "-" &&
@@ -15,49 +76,101 @@ function needed() {
       i !== "(" &&
       i !== ")"
     ) {
-      a += i;
+      resultHolder += i;
     } else {
       break;
     }
   }
-  console.log(input);
-  console.log(a);
-}
 
-needed();
-
-for (let i of input) {
-  if (i === "*") {
-    input = input.slice(input.indexOf("*") + 1);
-    console.log(input);
-    for (let i of input) {
-      if (i === "(") {
-        input = input.slice(input.indexOf("(") + 1);
-        b = Number(a);
-        console.log(input);
-        needed();
-      } else if (i === ")") {
-        input = input.slice(input.indexOf(")") + 1);
-        console.log(input);
-        break;
-      } else if (i === "+" || i === "-" || i === "*" || i === "/") {
-        break;
-      } else {
-        c += i;
-        console.log(c, "test2");
+  for (let i of figuresOnly) {
+    if (i === "*") {
+      figuresOnly = figuresOnly.slice(figuresOnly.indexOf("*") + 1);
+      for (let i of figuresOnly) {
+        if (i === "+" || i === "-" || i === "*" || i === "/") {
+          break;
+        } else {
+          concatVar += i;
+        }
       }
-    }
-    c = Number(c);
-    console.log(a, "test");
-    if (a === "") {
-      b *= c;
-    } else {
-      a = Number(a);
-      b = a * c;
-    }
-    a = "";
-    c = "";
-  }
-}
+      concatVar = Number(concatVar);
 
-console.log(b,"rt");
+      if (resultHolder === "") {
+        resultHolder2 *= concatVar;
+      } else {
+        resultHolder = Number(resultHolder);
+        resultHolder2 = resultHolder * concatVar;
+      }
+      resultHolder = "";
+      concatVar = "";
+    } else if (i === "-") {
+      figuresOnly = figuresOnly.slice(figuresOnly.indexOf("-") + 1);
+      for (let i of figuresOnly) {
+        if (i === "+" || i === "-" || i === "*" || i === "/") {
+          break;
+        } else {
+          concatVar += i;
+        }
+      }
+      concatVar = Number(concatVar);
+
+      if (resultHolder === "" && resultHolder2 === undefined) {
+        resultHolder2 = -concatVar;
+      } else if (resultHolder === "") {
+        resultHolder2 -= concatVar;
+      } else {
+        a = Number(resultHolder);
+        resultHolder2 = resultHolder - concatVar;
+      }
+      resultHolder = "";
+      concatVar = "";
+    } else if (i === "+") {
+      figuresOnly = figuresOnly.slice(figuresOnly.indexOf("+") + 1);
+      for (let i of figuresOnly) {
+        if (i === "+" || i === "-" || i === "*" || i === "/") {
+          break;
+        } else {
+          concatVar += i;
+        }
+      }
+      concatVar = Number(concatVar);
+
+      if (resultHolder === "") {
+        resultHolder2 += concatVar;
+      } else {
+        resultHolder = Number(resultHolder);
+        resultHolder2 = resultHolder + concatVar;
+      }
+      resultHolder = "";
+      concatVar = "";
+    } else if (i === "/") {
+      figuresOnly = figuresOnly.slice(figuresOnly.indexOf("/") + 1);
+      for (let i of figuresOnly) {
+        if (i === "+" || i === "-" || i === "*" || i === "/") {
+          break;
+        } else {
+          concatVar += i;
+        }
+      }
+      concatVar = Number(concatVar);
+
+      if (resultHolder === "") {
+        resultHolder2 /= concatVar;
+      } else {
+        resultHolder = Number(resultHolder);
+        resultHolder2 = resultHolder / concatVar;
+      }
+      resultHolder = "";
+      concatVar = "";
+    }
+  }
+
+  if (resultHolder === "") {
+    result = resultHolder2;
+    inputProcessor();
+  } else {
+    result = resultHolder;
+    inputProcessor();
+  }
+
+  someFunc();
+}

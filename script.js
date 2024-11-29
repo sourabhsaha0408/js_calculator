@@ -202,13 +202,24 @@ document.getElementById("reset").addEventListener("click", function () {
   document.getElementById("error-msg").style.display = "none";
 });
 
-let a = "";
-let b;
-let c = "";
+// when button delete is clicked
+document.getElementById("backspace").addEventListener("click", function () {
+  let l = document.getElementById("input-display").value.length;
+  document.getElementById("input-display").value = document
+    .getElementById("input-display")
+    .value.slice(0, l - 1);
+});
+
 let d;
 
 // when button = is clicked
 document.getElementById("equal").addEventListener("click", function () {
+  if (dot() === false) {
+    document.getElementById("error-msg").style.display = "block";
+
+    document.getElementById("result").value = 0;
+  }
+
   let l = document.getElementById("input-display").value.length;
   if (
     document.getElementById("input-display").value[l - 1] === "+" ||
@@ -249,141 +260,224 @@ document.getElementById("equal").addEventListener("click", function () {
     }
   }
 
+  let sumOfIndexValuesOfOpenBrackets = 0;
+  let sumOfIndexValuesOfCloseBrackets = 0;
+  let countOfOpenBrackets = 0;
+  let countOfCloseBrackets = 0;
+
   for (let i of document.getElementById("input-display").value) {
-    if (
-      i !== "+" &&
-      i !== "-" &&
-      i !== "*" &&
-      i !== "/" &&
-      i !== "(" &&
-      i !== ")"
-    ) {
-      a += i;
-    } else if (i === "(") {
-      document.getElementById("input-display").value = document
+    if (i === "(") {
+      countOfOpenBrackets++;
+    } else if (i === ")") {
+      countOfCloseBrackets++;
+    }
+  }
+
+  if (countOfCloseBrackets !== countOfOpenBrackets) {
+    document.getElementById("error-msg").style.display = "block";
+    return;
+  }
+
+  for (let i of document.getElementById("input-display").value) {
+    if (i === "(") {
+      sumOfIndexValuesOfOpenBrackets += document
         .getElementById("input-display")
-        .value.slice(
-          document.getElementById("input-display").value.indexOf("(") + 1
-        );
+        .value.indexOf("(");
+    } else if (i === ")") {
+      sumOfIndexValuesOfCloseBrackets += document
+        .getElementById("input-display")
+        .value.indexOf(")");
+    }
+  }
+
+  if (sumOfIndexValuesOfCloseBrackets < sumOfIndexValuesOfOpenBrackets) {
+    document.getElementById("error-msg").style.display = "block";
+    return;
+  }
+
+  let indexValueOfOpenBracket = 0;
+  let indexValueOfCloseBracket = 0;
+  let tempInput;
+  let result;
+
+  function inputProcessor() {
+    if (dot()) {
+      if (document.getElementById("input-display").value.indexOf("(") !== -1) {
+        document.getElementById("input-display").value = document
+          .getElementById("input-display")
+          .value.replace(tempInput, String(result));
+        someFunc();
+      } else {
+        document.getElementById("result").value = result;
+      }
     } else {
-      break;
+      document.getElementById("result").value = 0;
     }
   }
 
-  for (let i of document.getElementById("input-display").value) {
-    if (i === "*") {
-      document.getElementById("input-display").value = document
-        .getElementById("input-display")
-        .value.slice(
-          document.getElementById("input-display").value.indexOf("*") + 1
-        );
-      for (let i of document.getElementById("input-display").value) {
-        if (i === ")") {
-          document.getElementById("input-display").value = document
-            .getElementById("input-display")
-            .value.slice(
-              document.getElementById("input-display").value.indexOf(")") + 1
-            );
-          break;
-        } else if (i === "+" || i === "-" || i === "*" || i === "/") {
-          break;
-        } else {
-          c += i;
-        }
+  function someFunc() {
+    for (
+      i = 1;
+      i < document.getElementById("input-display").value.length;
+      i++
+    ) {
+      if (
+        document.getElementById("input-display").value[i] === "(" &&
+        document.getElementById("input-display").value[i - 1] !== "*" &&
+        document.getElementById("input-display").value[i - 1] !== "/" &&
+        document.getElementById("input-display").value[i - 1] !== "+" &&
+        document.getElementById("input-display").value[i - 1] !== "-"
+      ) {
+        document.getElementById("input-display").value =
+          document.getElementById("input-display").value.slice(0, i) +
+          "*" +
+          document.getElementById("input-display").value.slice(i);
       }
-      c = Number(c);
+    }
 
-      if (a === "") {
-        b *= c;
-      } else {
-        a = Number(a);
-        b = a * c;
+    for (
+      i = 0;
+      i < document.getElementById("input-display").value.length;
+      i++
+    ) {
+      if (document.getElementById("input-display").value[i] === ")") {
+        indexValueOfCloseBracket = i;
+        break;
+      } else if (document.getElementById("input-display").value[i] === "(") {
+        indexValueOfOpenBracket = i;
       }
-      a = "";
-      c = "";
-    } else if (i === "-") {
-      document.getElementById("input-display").value = document
-        .getElementById("input-display")
-        .value.slice(
-          document.getElementById("input-display").value.indexOf("-") + 1
-        );
-      for (let i of document.getElementById("input-display").value) {
-        if (i === "+" || i === "-" || i === "*" || i === "/") {
-          break;
-        } else {
-          c += i;
-        }
-      }
-      c = Number(c);
+    }
 
-      if (a === "" && b === undefined) {
-        b = -c;
-      } else if (a === "") {
-        b -= c;
-      } else {
-        a = Number(a);
-        b = a - c;
-      }
-      a = "";
-      c = "";
-    } else if (i === "+") {
-      document.getElementById("input-display").value = document
-        .getElementById("input-display")
-        .value.slice(
-          document.getElementById("input-display").value.indexOf("+") + 1
-        );
-      for (let i of document.getElementById("input-display").value) {
-        if (i === "+" || i === "-" || i === "*" || i === "/") {
-          break;
-        } else {
-          c += i;
-        }
-      }
-      c = Number(c);
+    tempInput = document
+      .getElementById("input-display")
+      .value.slice(indexValueOfOpenBracket, indexValueOfCloseBracket + 1);
 
-      if (a === "") {
-        b += c;
-      } else {
-        a = Number(a);
-        b = a + c;
-      }
-      a = "";
-      c = "";
-    } else if (i === "/") {
-      document.getElementById("input-display").value = document
-        .getElementById("input-display")
-        .value.slice(
-          document.getElementById("input-display").value.indexOf("/") + 1
-        );
-      for (let i of document.getElementById("input-display").value) {
-        if (i === "+" || i === "-" || i === "*" || i === "/") {
-          break;
-        } else {
-          c += i;
-        }
-      }
-      c = Number(c);
+    function calculate(somepara) {
+      return (somepara = somepara.slice(1, somepara.length - 1));
+    }
 
-      if (a === "") {
-        b /= c;
+    let figuresOnly = calculate(tempInput);
+
+    for (let k of document.getElementById("input-display").value) {
+      if (k !== "(") {
+        figuresOnly = document.getElementById("input-display").value;
       } else {
-        a = Number(a);
-        b = a / c;
+        figuresOnly = calculate(tempInput);
+        break;
       }
-      a = "";
-      c = "";
+    }
+
+    let resultHolder = "";
+    let resultHolder2;
+    let concatVar = "";
+
+    for (let i of figuresOnly) {
+      if (
+        i !== "+" &&
+        i !== "-" &&
+        i !== "*" &&
+        i !== "/" &&
+        i !== "(" &&
+        i !== ")"
+      ) {
+        resultHolder += i;
+      } else {
+        break;
+      }
+    }
+
+    for (let i of figuresOnly) {
+      if (i === "*") {
+        figuresOnly = figuresOnly.slice(figuresOnly.indexOf("*") + 1);
+        for (let i of figuresOnly) {
+          if (i === "+" || i === "-" || i === "*" || i === "/") {
+            break;
+          } else {
+            concatVar += i;
+          }
+        }
+        concatVar = Number(concatVar);
+
+        if (resultHolder === "") {
+          resultHolder2 *= concatVar;
+        } else {
+          resultHolder = Number(resultHolder);
+          resultHolder2 = resultHolder * concatVar;
+        }
+        resultHolder = "";
+        concatVar = "";
+      } else if (i === "-") {
+        figuresOnly = figuresOnly.slice(figuresOnly.indexOf("-") + 1);
+        for (let i of figuresOnly) {
+          if (i === "+" || i === "-" || i === "*" || i === "/") {
+            break;
+          } else {
+            concatVar += i;
+          }
+        }
+        concatVar = Number(concatVar);
+
+        if (resultHolder === "" && resultHolder2 === undefined) {
+          resultHolder2 = -concatVar;
+        } else if (resultHolder === "") {
+          resultHolder2 -= concatVar;
+        } else {
+          a = Number(resultHolder);
+          resultHolder2 = resultHolder - concatVar;
+        }
+        resultHolder = "";
+        concatVar = "";
+      } else if (i === "+") {
+        figuresOnly = figuresOnly.slice(figuresOnly.indexOf("+") + 1);
+        for (let i of figuresOnly) {
+          if (i === "+" || i === "-" || i === "*" || i === "/") {
+            break;
+          } else {
+            concatVar += i;
+          }
+        }
+        concatVar = Number(concatVar);
+
+        if (resultHolder === "") {
+          resultHolder2 += concatVar;
+        } else {
+          resultHolder = Number(resultHolder);
+          resultHolder2 = resultHolder + concatVar;
+        }
+        resultHolder = "";
+        concatVar = "";
+      } else if (i === "/") {
+        figuresOnly = figuresOnly.slice(figuresOnly.indexOf("/") + 1);
+        for (let i of figuresOnly) {
+          if (i === "+" || i === "-" || i === "*" || i === "/") {
+            break;
+          } else {
+            concatVar += i;
+          }
+        }
+        concatVar = Number(concatVar);
+
+        if (resultHolder === "") {
+          resultHolder2 /= concatVar;
+        } else {
+          resultHolder = Number(resultHolder);
+          resultHolder2 = resultHolder / concatVar;
+        }
+        resultHolder = "";
+        concatVar = "";
+      }
+    }
+
+    if (resultHolder === "") {
+      result = resultHolder2;
+      inputProcessor();
+    } else {
+      result = resultHolder;
+      inputProcessor();
     }
   }
 
-  if (a === "") {
-    document.getElementById("result").value = b;
-  } else {
-    document.getElementById("result").value = a;
-  }
+  someFunc();
 
   document.getElementById("input-display").value = d;
-
-  a = "";
-  b = undefined;
-  c = "";
 });
